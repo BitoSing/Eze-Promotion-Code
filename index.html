@@ -390,6 +390,30 @@
         const storedDataDiv = document.getElementById('result');
         const clearDataButton = document.getElementById('clearData');
 
+        // Load JSON data
+        fetch('path/to/data.json')
+            .then(response => response.json())
+            .then(data => {
+                // Store the JSON data
+                const jsonData = data;
+
+                // Function to populate subscription plans based on selected product
+                function populateSubscriptionPlans(selectedProduct, subscriptionElement) {
+                    const plans = jsonData.filter(item => item.product === selectedProduct);
+                    subscriptionElement.innerHTML = plans.map(plan => `
+                        <option value="${plan.price}">${plan.subscriptionPlan} - $${plan.price}</option>
+                    `).join('');
+                }
+
+                // Populate subscription plans on page load
+                populateSubscriptionPlans(product.value, subscription);
+                populateSubscriptionPlans(productNone.value, subscriptionNone);
+
+                // Event listeners
+                product.addEventListener('change', () => populateSubscriptionPlans(product.value, subscription));
+                productNone.addEventListener('change', () => populateSubscriptionPlans(productNone.value, subscriptionNone));
+            });
+
         // Subscription plans data
         const subscriptionPlans = {
             EzeSurf: [
