@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Promotion Code Form</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e8eaf6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            display: flex;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 1000px;
+        }
+        form {
+            width: 50%;
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .form-group {
+            flex: 1 1 45%;
+            min-width: 200px;
+            margin: 10px;
+        }
+        .form-group.full-width {
+            flex: 1 1 100%;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        select, input[type="text"], input[type="date"], input[type="number"], textarea, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        select:focus, input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, textarea:focus {
+            border-color: #007BFF;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0,123,255,0.5);
+        }
+        textarea {
+            height: 120px;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 5px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            width: 50%;
+            padding: 20px;
+            border-left: 2px solid #ccc;
+        }
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            form, .result {
+                width: 100%;
+            }
+        }
+        /* Scrollable dropdown */
+        select {
+            height: auto;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form id="promotionForm">
+            <!-- Option -->
+            <div class="form-group">
+                <label for="option">Option:</label>
+                <select id="option" name="option">
+                    <option value="With Promotion">With Promotion</option>
+                    <option value="None Promotion">None Promotion</option>
+                </select>
+            </div>
+
+            <!-- Product -->
+            <div class="form-group">
+                <label for="product">Product:</label>
+                <select id="product" name="product">
+                    <option value="EzeSurf">EzeSurf</option>
+                    <option value="MegaSurf">MegaSurf</option>
+                    <option value="DIA">DIA</option>
+                </select>
+            </div>
+
+            <!-- Subscription Plan -->
+            <div class="form-group">
+                <label for="subscription">Subscription Plan:</label>
+                <select id="subscription" name="subscription" size="1">
+                    <!-- Options will be dynamically populated based on the selected product -->
+                </select>
+            </div>
+
+            <!-- Promotion Code -->
+            <div class="form-group">
+                <label for="promotion_code">Promotion Code:</label>
+                <select id="promotion_code" name="promotion_code">
+                    <option value="In-Advance Promotion">In-Advance Promotion</option>
+                    <option value="On-Time Promotion">On-Time Promotion</option>
+                    <option value="Last Choice Promotion">Last Choice Promotion</option>
+                </select>
+            </div>
+
+            <!-- Month Renew -->
+            <div class="form-group">
+                <label for="month_renew">Month Renew:</label>
+                <input type="number" id="month_renew" name="month_renew" placeholder="Enter Month Renew">
+            </div>
+
+            <!-- Free Month -->
+            <div class="form-group">
+                <label for="free_month">Free Month:</label>
+                <input type="number" id="free_month" name="free_month" placeholder="Enter Free Month">
+            </div>
+
+            <!-- Phone Number -->
+            <div class="form-group">
+                <label for="phone_number">Phone Number:</label>
+                <input type="text" id="phone_number" name="phone_number" placeholder="Example: 012345678">
+            </div>
+
+            <!-- Start Charge Date -->
+            <div class="form-group">
+                <label for="start_charge_date">Start Charge Date:</label>
+                <input type="date" id="start_charge_date" name="start_charge_date" value="2025-09-06">
+            </div>
+
+            <!-- End Date/Expiry Date -->
+            <div class="form-group">
+                <label for="end_date">End Date/Expiry Date:</label>
+                <input type="text" id="end_date" name="end_date" readonly>
+            </div>
+
+            <!-- Amount (Auto-calculated) -->
+            <div class="form-group">
+                <label for="amount">Amount (Inc.VAT):</label>
+                <input type="number" id="amount" name="amount" readonly>
+            </div>
+
+            <!-- Description -->
+            <div class="form-group full-width">
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" placeholder="Example: Enter your description here..."></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-group full-width">
+                <button type="submit">Add</button>
+            </div>
+        </form>
+
+        <!-- Result Section -->
+        <div class="result" id="result">
+            <h3>Stored Data:</h3>
+            <div id="storedData"></div>
+            <button id="clearData" style="margin-top: 10px;">Clear Stored Data</button>
+        </div>
+    </div>
+
+    <script>
+        // Cache DOM elements
+        const product = document.getElementById('product');
+        const subscription = document.getElementById('subscription');
+        const monthRenew = document.getElementById('month_renew');
+        const freeMonth = document.getElementById('free_month');
+        const startChargeDate = document.getElementById('start_charge_date');
+        const endDateField = document.getElementById('end_date');
+        const amountField = document.getElementById('amount');
+        const form = document.getElementById('promotionForm');
+        const storedDataDiv = document.getElementById('storedData');
+        const clearDataButton = document.getElementById('clearData');
+
+        // Subscription plans data
+        const subscriptionPlans = {
+            EzeSurf: [
+                { name: "EzeSurf - 3M", price: "13.64" },
+                { name: "EzeSurf Lite-10M", price: "13.64" },
+                { name: "EzeSurf - 6M", price: "24.55" },
+                { name: "EzeSurf Plus-6M (Static IP)", price: "16.36" }
+            ],
+            MegaSurf: [
+                { name: "MegaSurf - 30Mb (Static IP)", price: "16.36" },
+                { name: "MegaSurf - 50Mb (Static IP)", price: "26.36" },
+                { name: "MegaSurf - 100Mb (Static IP)", price: "44.55" },
+                { name: "MegaSurf - 150Mb (Static IP)", price: "62.73" },
+                { name: "MegaSurf - 200M", price: "80.91" }
+            ],
+            DIA: [
+                { name: "DIA Pro 1 - 5Mbps", price: "130.00" },
+                { name: "DIA Pro 1 - 10Mbps", price: "160.00" },
+                { name: "DIA Pro 1 - 15Mbps", price: "195.00" }
+            ]
+        };
+
+        // Function to populate subscription plans based on selected product
+        function populateSubscriptionPlans() {
+            const selectedProduct = product.value;
+            const plans = subscriptionPlans[selectedProduct];
+            subscription.innerHTML = plans.map(plan => `
+                <option value="${plan.price}">${plan.name} - $${plan.price}</option>
+            `).join('');
+            calculateEndDateAndAmount(); // Recalculate amount when plans change
+        }
+
+        // Populate subscription plans on page load
+        populateSubscriptionPlans();
+
+        // Update subscription plans when product changes
+        product.addEventListener('change', populateSubscriptionPlans);
+
+        // Function to calculate end date and amount
+        function calculateEndDateAndAmount() {
+            const startDate = new Date(startChargeDate.value);
+            const totalMonths = parseInt(monthRenew.value || 0) + parseInt(freeMonth.value || 0);
+            const endDate = new Date(startDate.setMonth(startDate.getMonth() + totalMonths));
+            endDate.setDate(endDate.getDate() - 1); // Subtract 1 day
+            endDateField.value = endDate.toISOString().split('T')[0];
+
+            const subscriptionPrice = parseFloat(subscription.value);
+            const amount = (subscriptionPrice * (monthRenew.value || 0) * 1.1).toFixed(2); // 10% tax
+            amountField.value = amount;
+        }
+
+        // Attach event listeners
+        subscription.addEventListener('change', calculateEndDateAndAmount);
+        monthRenew.addEventListener('input', calculateEndDateAndAmount);
+        freeMonth.addEventListener('input', calculateEndDateAndAmount);
+        startChargeDate.addEventListener('change', calculateEndDateAndAmount);
+
+        // Handle form submission
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Get form data
+            const data = {
+                promotion_code: document.getElementById('promotion_code').value,
+                month_renew: monthRenew.value,
+                free_month: freeMonth.value,
+                phone_number: document.getElementById('phone_number').value,
+                amount: amountField.value,
+                start_charge_date: startChargeDate.value,
+                end_date: endDateField.value,
+                description: document.getElementById('description').value
+            };
+
+            // Format stored data
+            const storedDataHtml = `
+                <p><strong>Promo.Code:</strong> ${data.promotion_code}, <strong>Offer:</strong> ${data.month_renew} Free ${data.free_month}, <strong>Tel:</strong> ${data.phone_number}, <strong>Amount:</strong> $${data.amount}, <strong>Start Charge Date:</strong> from ${data.start_charge_date} to ${data.end_date}, <strong>Remark:</strong> ${data.description}</p>
+                <hr>
+            `;
+
+            // Append to stored data section
+            storedDataDiv.innerHTML = storedDataHtml + storedDataDiv.innerHTML;
+
+            // Reset form to default state
+            form.reset();
+            endDateField.value = '';
+            amountField.value = '';
+            populateSubscriptionPlans(); // Reset subscription plans
+        });
+
+        // Clear stored data
+        clearDataButton.addEventListener('click', function() {
+            storedDataDiv.innerHTML = '';
+        });
+    </script>
+</body>
+</html>
