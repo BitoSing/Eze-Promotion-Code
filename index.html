@@ -44,11 +44,25 @@
 
         .form-group {
             margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group label {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .form-group select,
+        .form-group input[type="text"],
+        .form-group input[type="date"],
+        .form-group input[type="number"],
+        .form-group textarea {
+            flex: 2;
         }
 
         label {
-            display: block;
-            margin-bottom: 8px;
             font-weight: bold;
             color: #333;
         }
@@ -149,13 +163,22 @@
                 max-height: 200px;
             }
         }
+
+        .hidden {
+            display: none;
+        }
+
+        input[type="number"]::before {
+            content: "$";
+            margin-right: 2px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <!-- Left Column: Form -->
         <div class="form-container">
-            <h1>Promotion Code</h1>
+            <h1 id="pageTitle">Promotion Code</h1>
             <form id="promotionForm">
                 <!-- Option -->
                 <div class="form-group">
@@ -166,74 +189,161 @@
                     </select>
                 </div>
 
-                <!-- Product -->
-                <div class="form-group">
-                    <label for="product">Product:</label>
-                    <select id="product" name="product">
-                        <option value="EzeSurf">EzeSurf</option>
-                        <option value="MegaSurf">MegaSurf</option>
-                        <option value="DIA">DIA</option>
-                    </select>
+                <!-- Dynamic Form for "With Promotion" -->
+                <div id="withPromotionForm">
+                    <!-- Product -->
+                    <div class="form-group">
+                        <label for="product">Product:</label>
+                        <select id="product" name="product">
+                            <option value="EzeSurf">EzeSurf</option>
+                            <option value="MegaSurf">MegaSurf</option>
+                            <option value="DIA">DIA</option>
+                        </select>
+                    </div>
+
+                    <!-- Subscription Plan -->
+                    <div class="form-group">
+                        <label for="subscription">Subscription Plan:</label>
+                        <select id="subscription" name="subscription" size="1">
+                            <!-- Options will be dynamically populated based on the selected product -->
+                        </select>
+                    </div>
+
+                    <!-- Promotion Code -->
+                    <div class="form-group">
+                        <label for="promotion_code">Promotion Code:</label>
+                        <select id="promotion_code" name="promotion_code">
+                            <option value="In-Advance Promotion">In-Advance Promotion</option>
+                            <option value="On-Time Promotion">On-Time Promotion</option>
+                            <option value="Last Choice Promotion">Last Choice Promotion</option>
+                        </select>
+                    </div>
+
+                    <!-- Dynamic Dropdown for Promotion Details -->
+                    <div class="form-group">
+                        <label for="promotion_details">Promotion Details:</label>
+                        <select id="promotion_details" name="promotion_details">
+                            <!-- Options will be dynamically populated based on the selected promotion code -->
+                        </select>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="form-group">
+                        <label for="phone_number">Phone Number:</label>
+                        <input type="text" id="phone_number" name="phone_number" placeholder="Example: 012345678">
+                    </div>
+
+                    <!-- Start Charge Date -->
+                    <div class="form-group">
+                        <label for="start_charge_date">Start Charge Date:</label>
+                        <input type="date" id="start_charge_date" name="start_charge_date" value="2025-09-06">
+                    </div>
+
+                    <!-- Amount (User input) -->
+                    <div class="form-group">
+                        <label for="amount">Amount (Inc.VAT):</label>
+                        <input type="number" id="amount" name="amount">
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group">
+                        <label for="description">Description:</label>
+                        <textarea id="description" name="description" placeholder="Example: Enter your description here..."></textarea>
+                    </div>
                 </div>
 
-                <!-- Subscription Plan -->
-                <div class="form-group">
-                    <label for="subscription">Subscription Plan:</label>
-                    <select id="subscription" name="subscription" size="1">
-                        <!-- Options will be dynamically populated based on the selected product -->
-                    </select>
-                </div>
+                <!-- None Promotion Page -->
+                <div id="nonePromotionForm" class="hidden">
+                    <!-- Product -->
+                    <div class="form-group">
+                        <label for="product_none">Product:</label>
+                        <select id="product_none" name="product_none">
+                            <option value="EzeSurf">EzeSurf</option>
+                            <option value="MegaSurf">MegaSurf</option>
+                            <option value="DIA">DIA</option>
+                        </select>
+                    </div>
 
-                <!-- Promotion Code -->
-                <div class="form-group">
-                    <label for="promotion_code">Promotion Code:</label>
-                    <select id="promotion_code" name="promotion_code">
-                        <option value="In-Advance Promotion">In-Advance Promotion</option>
-                        <option value="On-Time Promotion">On-Time Promotion</option>
-                        <option value="Last Choice Promotion">Last Choice Promotion</option>
-                    </select>
-                </div>
+                    <!-- Subscription Plan -->
+                    <div class="form-group">
+                        <label for="subscription_none">Subscription Plan:</label>
+                        <select id="subscription_none" name="subscription_none" size="1">
+                            <!-- Options will be dynamically populated based on the selected product -->
+                        </select>
+                    </div>
 
-                <!-- Month Renew -->
-                <div class="form-group">
-                    <label for="month_renew">Month Renew:</label>
-                    <input type="number" id="month_renew" name="month_renew" placeholder="Enter Month Renew">
-                </div>
+                    <!-- Promotion Code -->
+                    <div class="form-group">
+                        <label for="promotion_code_none">Promotion Code:</label>
+                        <select id="promotion_code_none" name="promotion_code_none">
+                            <option value="In-Advance Promotion">In-Advance Promotion</option>
+                            <option value="On-Time Promotion">On-Time Promotion</option>
+                            <option value="Last Choice Promotion">Last Choice Promotion</option>
+                        </select>
+                    </div>
 
-                <!-- Free Month -->
-                <div class="form-group">
-                    <label for="free_month">Free Month:</label>
-                    <input type="number" id="free_month" name="free_month" placeholder="Enter Free Month">
-                </div>
+                    <!-- Promotion Type -->
+                    <div class="form-group">
+                        <label for="promotion_type">Promotion Type:</label>
+                        <select id="promotion_type" name="promotion_type">
+                            <option value="Free Month">Free Month</option>
+                            <option value="Discount $">Discount $</option>
+                            <option value="Discount %">Discount %</option>
+                        </select>
+                    </div>
 
-                <!-- Phone Number -->
-                <div class="form-group">
-                    <label for="phone_number">Phone Number:</label>
-                    <input type="text" id="phone_number" name="phone_number" placeholder="Example: 012345678">
-                </div>
+                    <!-- Month Renew and Free Month (Visible only for Free Month) -->
+                    <div class="form-group hidden" id="monthRenewGroup">
+                        <label for="month_renew_none">Month Renew:</label>
+                        <input type="number" id="month_renew_none" name="month_renew_none" placeholder="Enter Month Renew">
+                    </div>
 
-                <!-- Start Charge Date -->
-                <div class="form-group">
-                    <label for="start_charge_date">Start Charge Date:</label>
-                    <input type="date" id="start_charge_date" name="start_charge_date" value="2025-09-06">
-                </div>
+                    <div class="form-group hidden" id="freeMonthGroup">
+                        <label for="free_month_none">Free Month:</label>
+                        <input type="number" id="free_month_none" name="free_month_none" placeholder="Enter Free Month">
+                    </div>
 
-                <!-- End Date/Expiry Date -->
-                <div class="form-group">
-                    <label for="end_date">End Date/Expiry Date:</label>
-                    <input type="text" id="end_date" name="end_date" readonly>
-                </div>
+                    <!-- Discount $ (Visible only for Discount $) -->
+                    <div class="form-group hidden" id="discountDollarGroup">
+                        <label for="discount_dollar">Discount $:</label>
+                        <input type="number" id="discount_dollar" name="discount_dollar" placeholder="Enter Discount $">
+                    </div>
 
-                <!-- Amount (Auto-calculated) -->
-                <div class="form-group">
-                    <label for="amount">Amount (Inc.VAT):</label>
-                    <input type="number" id="amount" name="amount" readonly>
-                </div>
+                    <!-- Discount % (Visible only for Discount %) -->
+                    <div class="form-group hidden" id="discountPercentGroup">
+                        <label for="discount_percent">Discount %:</label>
+                        <input type="number" id="discount_percent" name="discount_percent" placeholder="Enter Discount %">
+                    </div>
 
-                <!-- Description -->
-                <div class="form-group">
-                    <label for="description">Description:</label>
-                    <textarea id="description" name="description" placeholder="Example: Enter your description here..."></textarea>
+                    <!-- Phone Number -->
+                    <div class="form-group">
+                        <label for="phone_number_none">Phone Number:</label>
+                        <input type="text" id="phone_number_none" name="phone_number_none" placeholder="Example: 012345678">
+                    </div>
+
+                    <!-- Start Charge Date -->
+                    <div class="form-group">
+                        <label for="start_charge_date_none">Start Charge Date:</label>
+                        <input type="date" id="start_charge_date_none" name="start_charge_date_none" value="2025-09-06">
+                    </div>
+
+                    <!-- End Date/Expiry Date -->
+                    <div class="form-group hidden" id="endDateGroup">
+                        <label for="end_date_none">End Date/Expiry Date:</label>
+                        <input type="text" id="end_date_none" name="end_date_none" readonly>
+                    </div>
+
+                    <!-- Amount (Auto-calculated) -->
+                    <div class="form-group">
+                        <label for="amount_none">Amount (Inc.VAT):</label>
+                        <input type="number" id="amount_none" name="amount_none" readonly>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="form-group">
+                        <label for="description_none">Description:</label>
+                        <textarea id="description_none" name="description_none" placeholder="Example: Enter your description here..."></textarea>
+                    </div>
                 </div>
 
                 <!-- Submit Button -->
@@ -253,13 +363,29 @@
 
     <script>
         // Cache DOM elements
+        const option = document.getElementById('option');
+        const withPromotionForm = document.getElementById('withPromotionForm');
+        const nonePromotionForm = document.getElementById('nonePromotionForm');
+        const pageTitle = document.getElementById('pageTitle');
         const product = document.getElementById('product');
         const subscription = document.getElementById('subscription');
-        const monthRenew = document.getElementById('month_renew');
-        const freeMonth = document.getElementById('free_month');
+        const productNone = document.getElementById('product_none');
+        const subscriptionNone = document.getElementById('subscription_none');
+        const promotionCode = document.getElementById('promotion_code');
+        const promotionDetails = document.getElementById('promotion_details');
+        const promotionType = document.getElementById('promotion_type');
+        const monthRenewGroup = document.getElementById('monthRenewGroup');
+        const freeMonthGroup = document.getElementById('freeMonthGroup');
+        const discountDollarGroup = document.getElementById('discountDollarGroup');
+        const discountPercentGroup = document.getElementById('discountPercentGroup');
+        const monthRenewNone = document.getElementById('month_renew_none');
+        const freeMonthNone = document.getElementById('free_month_none');
+        const discountDollar = document.getElementById('discount_dollar');
+        const discountPercent = document.getElementById('discount_percent');
         const startChargeDate = document.getElementById('start_charge_date');
         const endDateField = document.getElementById('end_date');
         const amountField = document.getElementById('amount');
+        const amountNoneField = document.getElementById('amount_none');
         const form = document.getElementById('promotionForm');
         const storedDataDiv = document.getElementById('result');
         const clearDataButton = document.getElementById('clearData');
@@ -286,82 +412,188 @@
             ]
         };
 
-        // Function to populate subscription plans based on selected product
-        function populateSubscriptionPlans() {
-            const selectedProduct = product.value;
-            const plans = subscriptionPlans[selectedProduct];
-            subscription.innerHTML = plans.map(plan => `
-                <option value="${plan.price}">${plan.name} - $${plan.price}</option>
-            `).join('');
-            calculateEndDateAndAmount(); // Recalculate amount when plans change
+        // Promotion details data
+        const promotionDetailsData = {
+            "In-Advance Promotion": [
+                "3 + 2 months",
+                "4 + 2 months",
+                "5 + 2 months",
+                "6 + 3 months",
+                "7 + 3 months",
+                "8 + 3 months",
+                "12 + 3 months",
+                "13 + 3 months",
+                "14 + 3 months"
+            ],
+            "On-Time Promotion": [
+                "6 + 1 months",
+                "12 + 3 months",
+                "18 + 5 months",
+                "24 + 8 months"
+            ],
+            "Last Choice Promotion": []
+        };
+
+        // Function to toggle forms based on selected option
+        function toggleForms() {
+            if (option.value === "With Promotion") {
+                withPromotionForm.classList.remove('hidden');
+                nonePromotionForm.classList.add('hidden');
+                pageTitle.textContent = "With Promotion";
+            } else {
+                withPromotionForm.classList.add('hidden');
+                nonePromotionForm.classList.remove('hidden');
+                pageTitle.textContent = "None Promotion";
+            }
         }
 
-        // Populate subscription plans on page load
-        populateSubscriptionPlans();
+        // Function to populate subscription plans based on selected product
+        function populateSubscriptionPlans(selectedProduct, subscriptionElement) {
+            const plans = subscriptionPlans[selectedProduct];
+            subscriptionElement.innerHTML = plans.map(plan => `
+                <option value="${plan.price}">${plan.name} - $${plan.price}</option>
+            `).join('');
+        }
 
-        // Update subscription plans when product changes
-        product.addEventListener('change', populateSubscriptionPlans);
+        // Function to populate promotion details based on selected promotion code
+        function populatePromotionDetails(selectedPromotionCode) {
+            const details = promotionDetailsData[selectedPromotionCode];
+            promotionDetails.innerHTML = details.map(detail => `
+                <option value="${detail}">${detail}</option>
+            `).join('');
+        }
 
-        // Function to calculate end date and amount
-        function calculateEndDateAndAmount() {
-            const startDate = new Date(startChargeDate.value);
-            const totalMonths = parseInt(monthRenew.value || 0) + parseInt(freeMonth.value || 0);
-            const endDate = new Date(startDate.setMonth(startDate.getMonth() + totalMonths));
-            endDate.setDate(endDate.getDate() - 1); // Subtract 1 day
-            endDateField.value = endDate.toISOString().split('T')[0];
+        // Function to toggle visibility of fields in "None Promotion" page
+        function togglePromotionTypeFields() {
+            const selectedPromotionType = promotionType.value;
+            monthRenewGroup.classList.add('hidden');
+            freeMonthGroup.classList.add('hidden');
+            discountDollarGroup.classList.add('hidden');
+            discountPercentGroup.classList.add('hidden');
 
+            if (selectedPromotionType === "Free Month") {
+                monthRenewGroup.classList.remove('hidden');
+                freeMonthGroup.classList.remove('hidden');
+                freeMonthGroup.querySelector('label').textContent = "Free Month";
+            } else if (selectedPromotionType === "Discount $") {
+                discountDollarGroup.classList.remove('hidden');
+                monthRenewGroup.classList.remove('hidden'); // Show Month Renew section
+                freeMonthGroup.classList.add('hidden'); // Hide Free Month section
+            } else if (selectedPromotionType === "Discount %") {
+                discountPercentGroup.classList.remove('hidden');
+                monthRenewGroup.classList.remove('hidden'); // Show Month Renew section
+                freeMonthGroup.classList.add('hidden'); // Hide Free Month section
+            }
+        }
+
+        // Function to calculate amount for "With Promotion"
+        function calculateWithPromotionAmount() {
             const subscriptionPrice = parseFloat(subscription.value);
-            const amount = (subscriptionPrice * (monthRenew.value || 0) * 1.1).toFixed(2); // 10% tax
+            const promotionDetail = promotionDetails.value;
+            const [monthsRenew, freeMonths] = promotionDetail.split(" + ").map(Number);
+            const amount = (subscriptionPrice * monthsRenew * 1.1).toFixed(2); // 10% tax
             amountField.value = amount;
         }
 
-        // Attach event listeners
-        subscription.addEventListener('change', calculateEndDateAndAmount);
-        monthRenew.addEventListener('input', calculateEndDateAndAmount);
-        freeMonth.addEventListener('input', calculateEndDateAndAmount);
-        startChargeDate.addEventListener('change', calculateEndDateAndAmount);
+        // Function to calculate amount for "None Promotion"
+        function calculateNonePromotionAmount() {
+            const subscriptionPrice = parseFloat(subscriptionNone.value);
+            let amount = subscriptionPrice;
+            const selectedPromotionType = promotionType.value;
 
-        // Handle form submission
-        form.addEventListener('submit', function(event) {
+            if (selectedPromotionType === "Free Month") {
+                const monthsRenew = parseFloat(monthRenewNone.value) || 0;
+                amount = (subscriptionPrice * monthsRenew * 1.1).toFixed(2); // 10% tax
+            } else if (selectedPromotionType === "Discount $") {
+                const discount = parseFloat(discountDollar.value) || 0;
+                const monthsRenew = parseFloat(monthRenewNone.value) || 0;
+                amount = (subscriptionPrice * monthsRenew - discount).toFixed(2);
+            } else if (selectedPromotionType === "Discount %") {
+                const discount = parseFloat(discountPercent.value) || 0;
+                const monthsRenew = parseFloat(monthRenewNone.value) || 0;
+                amount = (subscriptionPrice * monthsRenew * (1 - discount / 100) * 1.1).toFixed(2); // 10% tax
+            }
+
+            amountNoneField.value = amount;
+        }
+
+        // Function to calculate end date based on promotion type
+        function calculateEndDate() {
+            const startChargeDateNone = document.getElementById('start_charge_date_none').value;
+            const startDate = new Date(startChargeDateNone);
+            let endDate = new Date(startChargeDateNone);
+
+            if (promotionType.value === "Free Month") {
+                const monthsRenew = parseInt(monthRenewNone.value) || 0;
+                const freeMonths = parseInt(freeMonthNone.value) || 0;
+                endDate.setMonth(endDate.getMonth() + monthsRenew + freeMonths);
+                endDate.setDate(endDate.getDate() - 1);
+                document.getElementById('end_date_none').value = endDate.toISOString().split('T')[0];
+                document.getElementById('endDateGroup').classList.remove('hidden');
+            } else {
+                document.getElementById('endDateGroup').classList.add('hidden');
+            }
+        }
+
+        // Function to format stored data
+        function formatStoredData(data) {
+            let subject = data.option === "With Promotion" ? "With Promotion" : "None Promotion";
+            let result = `<strong>${subject}</strong><br>`;
+            if (data.option === "With Promotion") {
+                result += `Promo.Code: ${data.promotion_code}, Promo.Details: ${data.promotion_details}, Tel: ${data.phone_number}, Start Charge Date: ${data.start_charge_date}, Amount: $${parseFloat(data.amount).toFixed(2)}, Remark: ${data.description}`;
+            } else {
+                result += `Promo.Code: ${data.promotion_code_none}, Month Renew: ${data.month_renew_none} Month${data.month_renew_none > 1 ? 's' : ''}`;
+                if (data.promotion_type === "Free Month") {
+                    result += ` ${data.free_month_none} Month${data.free_month_none > 1 ? 's' : ''}, Tel: ${data.phone_number_none}, Start Charge Date: ${data.start_charge_date_none} to ${data.end_date_none}, Amount: $${parseFloat(data.amount_none).toFixed(2)}, Remark: ${data.description_none}`;
+                } else {
+                    result += `, Tel: ${data.phone_number_none}, Start Charge Date: ${data.start_charge_date_none}, Amount: $${parseFloat(data.amount_none).toFixed(2)}, Remark: ${data.description_none}`;
+                }
+            }
+            return result;
+        }
+
+        // Function to handle form submission
+        function handleFormSubmit(event) {
             event.preventDefault();
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            const formattedData = formatStoredData(data);
+            const resultItem = document.createElement('div');
+            resultItem.className = 'result-item';
+            resultItem.innerHTML = formattedData;
+            storedDataDiv.appendChild(resultItem);
+        }
 
-            // Get form data
-            const data = {
-                promotion_code: document.getElementById('promotion_code').value,
-                month_renew: monthRenew.value,
-                free_month: freeMonth.value,
-                phone_number: document.getElementById('phone_number').value,
-                amount: amountField.value,
-                start_charge_date: startChargeDate.value,
-                end_date: endDateField.value,
-                description: document.getElementById('description').value
-            };
+        // Event listener for form submission
+        form.addEventListener('submit', handleFormSubmit);
 
-            // Format "Offer" text
-            const monthRenewText = data.month_renew > 1 ? `${data.month_renew} Months` : `${data.month_renew} Month`;
-            const freeMonthText = data.free_month > 1 ? `${data.free_month} Months` : `${data.free_month} Month`;
-            const offerText = `Offer: ${monthRenewText} Free ${freeMonthText}`;
+        // Populate subscription plans on page load
+        populateSubscriptionPlans(product.value, subscription);
+        populateSubscriptionPlans(productNone.value, subscriptionNone);
+        populatePromotionDetails(promotionCode.value);
 
-            // Format stored data
-            const storedDataHtml = `
-                <p><strong>Promo.Code:</strong> ${data.promotion_code}, <strong>${offerText}</strong>, <strong>Tel:</strong> ${data.phone_number}, <strong>Amount:</strong> $${data.amount}, <strong>Start Charge Date:</strong> from ${data.start_charge_date} to ${data.end_date}, <strong>Remark:</strong> ${data.description}</p>
-                <hr>
-            `;
+        // Initialize
+        toggleForms();
+        togglePromotionTypeFields();
 
-            // Append to stored data section
-            storedDataDiv.innerHTML = storedDataHtml + storedDataDiv.innerHTML;
-
-            // Reset form to default state
-            form.reset();
-            endDateField.value = '';
-            amountField.value = '';
-            populateSubscriptionPlans(); // Reset subscription plans
-        });
-
-        // Clear stored data
-        clearDataButton.addEventListener('click', function() {
-            storedDataDiv.innerHTML = '';
-        });
+        // Event listeners
+        option.addEventListener('change', toggleForms);
+        product.addEventListener('change', () => populateSubscriptionPlans(product.value, subscription));
+        productNone.addEventListener('change', () => populateSubscriptionPlans(productNone.value, subscriptionNone));
+        promotionCode.addEventListener('change', () => populatePromotionDetails(promotionCode.value));
+        promotionType.addEventListener('change', togglePromotionTypeFields);
+        promotionType.addEventListener('change', calculateNonePromotionAmount);
+        monthRenewNone.addEventListener('input', calculateNonePromotionAmount);
+        freeMonthNone.addEventListener('input', calculateNonePromotionAmount);
+        discountDollar.addEventListener('input', calculateNonePromotionAmount);
+        discountPercent.addEventListener('input', calculateNonePromotionAmount);
+        subscription.addEventListener('change', calculateWithPromotionAmount);
+        subscriptionNone.addEventListener('change', calculateNonePromotionAmount);
+        promotionType.addEventListener('change', calculateEndDate);
+        monthRenewNone.addEventListener('input', calculateEndDate);
+        freeMonthNone.addEventListener('input', calculateEndDate);
+        startChargeDate.addEventListener('change', calculateEndDate);
+        startChargeDateNone.addEventListener('change', calculateEndDate);
     </script>
 </body>
 </html>
