@@ -172,6 +172,12 @@
             content: "$";
             margin-right: 2px;
         }
+
+        .footer {
+            font-style: italic;
+            font-size: 10px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -445,9 +451,9 @@
                 "6 + 3 months",
                 "7 + 3 months",
                 "8 + 3 months",
-                "12 + 3 months",
-                "13 + 3 months",
-                "14 + 3 months"
+                "12 + 5 months",
+                "13 + 5 months",
+                "14 + 5 months"
             ],
             "On-Time Promotion": [
                 "6 + 1 months",
@@ -566,13 +572,11 @@
             if (data.option === "With Promotion") {
                 result += `Promo.Code: ${data.promotion_code}, Promo.Details: ${data.promotion_details}, Tel: ${data.phone_number}, Start Charge Date: ${data.start_charge_date}, Amount: $${parseFloat(data.amount).toFixed(2)}, Remark: ${data.description}`;
             } else {
-                result += `Promo.Code: ${data.promotion_code_none}, Month Renew: ${data.month_renew_none} Month${data.month_renew_none > 1 ? 's' : ''}`;
-                if (data.promotion_type === "Free Month") {
-                    result += ` ${data.free_month_none} Month${data.free_month_none > 1 ? 's' : ''}, Tel: ${data.phone_number_none}, Start Charge Date: ${data.start_charge_date_none} to ${data.end_date_none}, Amount: $${parseFloat(data.amount_none).toFixed(2)}, Remark: ${data.description_none}`;
-                } else {
-                    result += `, Tel: ${data.phone_number_none}, Start Charge Date: ${data.start_charge_date_none}, Amount: $${parseFloat(data.amount_none).toFixed(2)}, Remark: ${data.description_none}`;
-                }
+                result += `Promo.Code: ${data.promotion_code_none}, Month Renew: ${data.month_renew_none}, Type: ${data.promotion_type}, Tel: ${data.phone_number_none}, Start Charge Date: ${data.start_charge_date_none}, Amount: $${parseFloat(data.amount_none).toFixed(2)}, Remark: ${data.description_none}`;
             }
+            // Add submission date
+            const submissionDate = new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+            result += `<div style="font-style: italic; font-size: 10px;">Created on ${submissionDate}</div>`;
             return result;
         }
 
@@ -588,8 +592,16 @@
             storedDataDiv.appendChild(resultItem);
         }
 
+        // Function to clear stored data
+        function clearStoredData() {
+            storedDataDiv.innerHTML = '';
+        }
+
         // Event listener for form submission
         form.addEventListener('submit', handleFormSubmit);
+
+        // Event listener for clearing stored data
+        clearDataButton.addEventListener('click', clearStoredData);
 
         // Populate subscription plans on page load
         populateSubscriptionPlans(product.value, subscription);
@@ -618,6 +630,11 @@
         freeMonthNone.addEventListener('input', calculateEndDate);
         startChargeDate.addEventListener('change', calculateEndDate);
         startChargeDateNone.addEventListener('change', calculateEndDate);
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const submissionDate = new Date().toLocaleDateString();
+            document.getElementById('submissionDate').innerText = submissionDate;
+        });
     </script>
 </body>
 </html>
